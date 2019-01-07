@@ -1,3 +1,7 @@
+const axios = require('axios');
+const cherrio = require('cheerio');
+const client = require('./es');
+
 const goldTypes = [
     '10K', '14K', '18K', '24K', 'SJC10c', 'SJC1c', 'SJC99.99', 'SJC99.99N'
 ]

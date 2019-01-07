@@ -1,5 +1,5 @@
 URL_PAGE=https://www.24h.com.vn/ttcb/giavang/giavang.php
-URL_PAGE_DIAMOND=http://trangsuc.doji.vn/kim-cuong-vien?page=1
+URL_PAGE_DIAMOND=http://thegioikimcuong.vn/bang-gia-kim-cuong-vien/?utm_source=google&utm_medium=cleverads&utm_campaign=diamonds
 ES_URL=localhost:9200
 GOLD=*/3 * * * * *
 DIAMOND=*/3 * * * * *

@@ -1,35 +1,50 @@
 const client = require('./es');
 const axios = require('axios');
 const cherrio = require('cheerio');
+const fs = require('fs');
 
 
 const getHomePage = async (url) => {
-    const page = await axios.get(url, {
-        headers: {
-            'Cookie': 'CartUrlBack=%2Fkim-cuong-vien-igi; ssupp.vid=4uI5Jat_Nz; lang=vi; ssupp.visits=2; ssupp.chatid=DYaEKoBcLFpjRG3GFzMH6uWDjYqxGmqV; product_total_row=200'
-        }
-    });
+    const page = await axios.get(url);
     return cherrio.load(page.data);
 }
 
-const getPrice = ($) => {
-    const priceTable = $('#loadpage > div.body-list2-product > table > tbody > tr').toArray();
-    const prices = priceTable
-        .map(c => {
-            const hinhDang = $(c.el).find('td:nth-child(2) > i').text();
-            const trongLuong = $(c.el).find('td:nth-child(3) > i').text();
-            return {
-                hinhDang,
-                trongLuong
-            }
-        })
-    return prices;
+const getSize = (el) => {
+    return el.find('div div p').text()
+}
+
+const getAttr = ($,el) => {
+    const attrs = el.find('div div table tbody tr').toArray();
+    const parser = attrs.map(c => {
+        return {
+            color: $(c).find('td:nth-child(1)').text(),
+            IF: parseInt($(c).find('td:nth-child(2)').text().replace(/,/g,'')),
+            VVS1: parseInt($(c).find('td:nth-child(3)').text().replace(/,/g,'')),
+            VVS: parseInt($(c).find('td:nth-child(4)').text().replace(/,/g,'')),
+            VS1: parseInt($(c).find('td:nth-child(5)').text().replace(/,/g,'')),
+            VS2: parseInt($(c).find('td:nth-child(6)').text().replace(/,/g,'')),
+        }
+    })
+    return parser
+
+}
+
+const getPrices = ($) => {
+    const tables = $('#portfolio > div').toArray();
+    const price = tables.map(c => {
+        return {
+            size: parseFloat(getSize($(c)).match(/\d LY \d/g)[0].replace(' LY ', '.')),
+            attr: getAttr($,$(c)),
+            updatedDate: new Date()
+        }
+    })
+    return price;
 }
 
 const insertOrUpdate = async (data) => {
     await client.index({
-        index: 'gold',
-        type: 'gold',
+        index: 'diamond',
+        type: 'diamond',
         id: '1',
         body: {
             ...data
@@ -39,9 +54,8 @@ const insertOrUpdate = async (data) => {
 
 const crawl = async () => {
     const html = await getHomePage(process.env.URL_PAGE_DIAMOND);
-    const prices = getPrice(html);
-    // await insertOrUpdate(prices);
-    console.log(prices)
+    const price = getPrices(html);
+    await insertOrUpdate(price)
 }
 
 module.exports = crawl;
