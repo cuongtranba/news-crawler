@@ -1,0 +1,6 @@
+URL_PAGE=https://www.24h.com.vn/ttcb/giavang/giavang.php
+URL_PAGE_DIAMOND=http://trangsuc.doji.vn/kim-cuong-vien?page=1
+ES_URL=localhost:9200
+GOLD=*/3 * * * * *
+DIAMOND=*/3 * * * * *
+CRONbk=50 8 * * 1-6
